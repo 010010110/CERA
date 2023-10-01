@@ -11,7 +11,27 @@ function generateToken(params = {}) {
   return jwt.sign(params, authConfig.secret, { expiresIn: 84600 });
 }
 
-router.post("/perfil/registrar", async (req, res) => {
+router.post("/entrar", async (req, res) => {
+  try {
+    let { email, senha } = req.body;
+
+    const user = await User.findOne({ email }).select("+senha");
+
+    if (!user) {
+      return res.status(404).json({ message: "User not Found" });
+    }
+
+    if (!(await bcrypt.compare(senha, user.senha))) {
+      return res.status(400).json({ message: "invalid Login" });
+    }
+
+    res.send({ user, token: generateToken({ id: user.id }) });
+  } catch (err) {
+    res.status(400).send({ error: "cant authenticate" });
+  }
+});
+
+router.post("/registrar", async (req, res) => {
   try {
     let user = req.body;
     user.dataRegistro = new Date();
@@ -28,7 +48,7 @@ router.post("/perfil/registrar", async (req, res) => {
   }
 });
 
-router.get("/perfil/:id", authMiddleware, async (req, res) => {
+router.get("/:id", authMiddleware, async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
     res.status(200).send(user);
@@ -37,7 +57,7 @@ router.get("/perfil/:id", authMiddleware, async (req, res) => {
   }
 });
 
-router.patch("/perfil/senha/alterar/:id", authMiddleware, async (req, res) => {
+router.patch("/senha/alterar/:id", authMiddleware, async (req, res) => {
   try {
     let { senha } = req.body;
     senha = await bcrypt.hash(senha, 10);
