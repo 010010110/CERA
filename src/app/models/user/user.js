@@ -23,6 +23,9 @@ const UserSchema = new mongoose.Schema({
       require: true,
     },
   },
+  dataRegistro: {
+    type: Date,
+  },
 });
 
 UserSchema.pre("save", async function (next) {

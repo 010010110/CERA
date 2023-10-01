@@ -13,10 +13,15 @@ function generateToken(params = {}) {
 
 router.post("/perfil/registrar", async (req, res) => {
   try {
-    const user = await User.create(req.body);
+    let user = req.body;
+    user.dataRegistro = new Date();
+    const userCreated = await User.create(user);
     User.senha = undefined;
 
-    res.send({ user, token: generateToken({ id: user.id }) });
+    res.send({
+      user: userCreated,
+      token: generateToken({ id: userCreated.id }),
+    });
   } catch (err) {
     console.log(err);
     return res.status(400).send({ error: "Registration User Failed" });

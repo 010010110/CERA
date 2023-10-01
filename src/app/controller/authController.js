@@ -1,7 +1,6 @@
 const express = require("express");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const crypto = require("crypto");
 const User = require("../models/user/user");
 const authConfig = require("../../../config/auth.json");
 
@@ -13,7 +12,7 @@ function generateToken(params = {}) {
 
 router.post("/entrar", async (req, res) => {
   try {
-    const { email, senha } = req.body;
+    let { email, senha } = req.body;
 
     const user = await User.findOne({ email }).select("+senha");
 
