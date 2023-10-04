@@ -81,7 +81,3 @@ Sera necessario uma instancia do MongoDB com um cluster para realizar a coneçã
   }
 );
 ```
-
-## notas: 
-
-Esse projeto não segui as especificações REST por se tratar de um teste técnico onde é especificado que devo criar os endpoints com a nomeclatura acima.
